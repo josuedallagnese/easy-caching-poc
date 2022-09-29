@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "EasyCaching.Demo.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:58941;http://localhost:58942"
+    }
+  }
+}
