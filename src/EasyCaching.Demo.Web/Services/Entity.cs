@@ -1,5 +1,4 @@
 ﻿using EasyCaching.Core.Interceptor;
-using Newtonsoft.Json;
 using System;
 
 namespace EasyCaching.Demo.Interceptors.Services
@@ -9,7 +8,8 @@ namespace EasyCaching.Demo.Interceptors.Services
         public int Id { get; set; }
         public DateTime Creation { get; set; }
         
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public string CacheKey { get; }
 
         public Entity()
