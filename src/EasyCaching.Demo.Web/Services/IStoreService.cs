@@ -6,6 +6,7 @@ namespace EasyCaching.Demo.Interceptors.Services
     {
         Product GetCachedProduct(int id);
         Category GetCachedCategory(int id);
+        string GetRawCacheCategory(int id);
     }
 
     public interface IStoreService : ICachedStoreService

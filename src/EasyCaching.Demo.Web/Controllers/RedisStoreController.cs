@@ -22,6 +22,14 @@ namespace EasyCaching.Demo.Interceptors.Controllers
             return response;
         }
 
+        [HttpGet("redis-cache/categories/{id}/raw")]
+        public string GetRawCachedCategory(int id)
+        {
+            var response = _service.GetRawCacheCategory(id);
+
+            return response;
+        }
+
         [HttpGet("redis-cache-using-aspects/categories/{id}")]
         public Category GetCategory(int id)
         {

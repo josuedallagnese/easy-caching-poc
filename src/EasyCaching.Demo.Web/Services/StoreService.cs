@@ -5,13 +5,15 @@ namespace EasyCaching.Demo.Interceptors.Services
 {
     public class StoreService : IStoreService
     {
-        private readonly Lazy<IEasyCachingProvider> _memoryProvider;
-        private readonly Lazy<IEasyCachingProvider> _redisProvider;
+        private readonly Lazy<IEasyCachingProvider> _easyMemoryCachingProvider;
+        private readonly Lazy<IEasyCachingProvider> _easyRedisCachingProvider;
+        private readonly Lazy<IRedisCachingProvider> _redisCachingProvider;
 
         public StoreService(IEasyCachingProviderFactory factory)
         {
-            _memoryProvider = new Lazy<IEasyCachingProvider>(factory.GetCachingProvider("memory"));
-            _redisProvider = new Lazy<IEasyCachingProvider>(factory.GetCachingProvider("redis"));
+            _easyMemoryCachingProvider = new Lazy<IEasyCachingProvider>(factory.GetCachingProvider("memory"));
+            _easyRedisCachingProvider = new Lazy<IEasyCachingProvider>(factory.GetCachingProvider("redis"));
+            _redisCachingProvider = new Lazy<IRedisCachingProvider>(factory.GetRedisProvider("redis"));
         }
 
         public void DeleteCategory(int id)
@@ -27,9 +29,18 @@ namespace EasyCaching.Demo.Interceptors.Services
             return new Category(id);
         }
 
+        public string GetRawCacheCategory(int id)
+        {
+            var cacheKey = $"category:{id}";
+
+            var redisValue = _redisCachingProvider.Value.StringGet(cacheKey);
+
+            return redisValue;
+        }
+
         public Category GetCachedCategory(int id)
         {
-            var valueInCache = _redisProvider.Value.Get<Category>($"category:{id}");
+            var valueInCache = _easyRedisCachingProvider.Value.Get<Category>($"category:{id}");
 
             return valueInCache?.Value;
         }
@@ -41,7 +52,9 @@ namespace EasyCaching.Demo.Interceptors.Services
 
         public Product GetCachedProduct(int id)
         {
-            var valueInCache = _memoryProvider.Value.Get<Product>($"product:{id}");
+            var cacheKey = $"product:{id}";
+
+            var valueInCache = _easyMemoryCachingProvider.Value.Get<Product>(cacheKey);
 
             return valueInCache?.Value;
         }
