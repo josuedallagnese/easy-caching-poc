@@ -1,4 +1,5 @@
 ﻿using EasyCaching.Core;
+using EasyCaching.Demo.Web.Services.Entities;
 using System;
 
 namespace EasyCaching.Demo.Interceptors.Services

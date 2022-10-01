@@ -1,4 +1,4 @@
-﻿namespace EasyCaching.Demo.Interceptors.Services
+﻿namespace EasyCaching.Demo.Web.Services.Entities
 {
     public class Product : Entity
     {

@@ -1,15 +1,15 @@
-﻿namespace EasyCaching.Demo.Interceptors
-{
-    using EasyCaching.Core;
-    using EasyCaching.Demo.Interceptors.Services;
-    using EasyCaching.Interceptor.AspectCore;
-    using EasyCaching.Redis;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
+﻿using EasyCaching.Demo.Interceptors.Services;
+using EasyCaching.Demo.Web.Services;
+using EasyCaching.Interceptor.AspectCore;
+using EasyCaching.Redis;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
+namespace EasyCaching.Demo.Interceptors
+{
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -22,17 +22,37 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IStoreService, StoreService>();
+            services.AddScoped<IHybridStore, HybridStore>();
 
             services.AddEasyCaching(options =>
             {
-                options.UseInMemory("memory");
+                options.UseInMemory(config =>
+                {
+                    config.EnableLogging = true;
+                }, "memory");
 
                 options.UseRedis(config =>
                 {
+                    config.EnableLogging = true;
                     config.DBConfig = new RedisDBOptions { Configuration = "localhost" };
                     config.SerializerName = "json";
-                }, "redis")
-                .WithJson();
+                }, "redis");
+
+                options.UseHybrid(config =>
+                {
+                    config.EnableLogging = true;
+                    config.LocalCacheProviderName = "memory";
+                    config.DistributedCacheProviderName = "redis";
+                    config.TopicName = "cache-topic";
+                }, "hybrid");
+
+                options.WithRedisBus(config =>
+                {
+                    config.Endpoints.Add(new Core.Configurations.ServerEndPoint("localhost", 6379));
+                    config.SerializerName = "json";
+                }, "redis-bus");
+
+                options.WithJson();
             });
 
             services.AddControllers();
@@ -40,7 +60,7 @@
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
-            services.ConfigureAspectCoreInterceptor(options => options.CacheProviderName = EasyCachingConstValue.DefaultInMemoryName);
+            services.ConfigureAspectCoreInterceptor(options => options.CacheProviderName = "memory");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

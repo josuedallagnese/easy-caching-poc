@@ -1,4 +1,5 @@
 ﻿using EasyCaching.Demo.Interceptors.Services;
+using EasyCaching.Demo.Web.Services.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyCaching.Demo.Interceptors.Controllers

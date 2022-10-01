@@ -1,13 +1,13 @@
 ﻿using EasyCaching.Core.Interceptor;
 using System;
 
-namespace EasyCaching.Demo.Interceptors.Services
+namespace EasyCaching.Demo.Web.Services.Entities
 {
     public abstract class Entity : ICachable
     {
         public int Id { get; set; }
         public DateTime Creation { get; set; }
-        
+
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public string CacheKey { get; }
