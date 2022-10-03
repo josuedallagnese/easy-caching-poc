@@ -18,7 +18,7 @@ namespace EasyCaching.Demo.Web.Controllers
         [HttpGet("hybrid-cache/memory/customer/{id}")]
         public Customer GetCustomerInMemory(int id)
         {
-            var response = _service.GetCustomerInMemory(id);
+            var response = _service.GetCustomerByMemory(id);
 
             return response;
         }
@@ -26,7 +26,15 @@ namespace EasyCaching.Demo.Web.Controllers
         [HttpGet("hybrid-cache/redis/customer/{id}")]
         public Customer GetCustomerInRedis(int id)
         {
-            var response = _service.GetCustomerInRedis(id);
+            var response = _service.GetCustomerByRedis(id);
+
+            return response;
+        }
+
+        [HttpGet("hybrid-cache/hybrid/customer/{id}")]
+        public Customer GetCustomerByHybrid(int id)
+        {
+            var response = _service.GetCustomerByHybrid(id);
 
             return response;
         }

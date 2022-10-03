@@ -8,11 +8,13 @@ namespace EasyCaching.Demo.Web.Services
     {
         private readonly Lazy<IEasyCachingProvider> _easyMemoryCachingProvider;
         private readonly Lazy<IEasyCachingProvider> _easyRedisCachingProvider;
+        private readonly IHybridCachingProvider _hybridCachingProvider;
 
-        public HybridStore(IEasyCachingProviderFactory factory)
+        public HybridStore(IEasyCachingProviderFactory factory, IHybridCachingProvider hybridCachingProvider)
         {
             _easyMemoryCachingProvider = new Lazy<IEasyCachingProvider>(factory.GetCachingProvider("memory"));
             _easyRedisCachingProvider = new Lazy<IEasyCachingProvider>(factory.GetCachingProvider("redis"));
+            _hybridCachingProvider = hybridCachingProvider;
         }
 
         public void DeleteCustomer(int id)
@@ -24,14 +26,21 @@ namespace EasyCaching.Demo.Web.Services
             return new Customer(id);
         }
 
-        public Customer GetCustomerInMemory(int id)
+        public Customer GetCustomerByHybrid(int id)
+        {
+            var cachedCustomer = _hybridCachingProvider.Get<Customer>($"customer:{id}");
+
+            return cachedCustomer?.Value;
+        }
+
+        public Customer GetCustomerByMemory(int id)
         {
             var cachedCustomer = _easyMemoryCachingProvider.Value.Get<Customer>($"customer:{id}");
 
             return cachedCustomer?.Value;
         }
 
-        public Customer GetCustomerInRedis(int id)
+        public Customer GetCustomerByRedis(int id)
         {
             var cachedCustomer = _easyRedisCachingProvider.Value.Get<Customer>($"customer:{id}");
 

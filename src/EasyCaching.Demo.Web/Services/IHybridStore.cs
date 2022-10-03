@@ -5,8 +5,9 @@ namespace EasyCaching.Demo.Web.Services
 {
     public interface IHybridStore
     {
-        Customer GetCustomerInMemory(int id);
-        Customer GetCustomerInRedis(int id);
+        Customer GetCustomerByMemory(int id);
+        Customer GetCustomerByRedis(int id);
+        Customer GetCustomerByHybrid(int id);
 
 
         [EasyCachingAble(CacheKeyPrefix = "customer", IsHybridProvider = true, Expiration = 10)]
