@@ -34,7 +34,7 @@ namespace EasyCaching.Demo.Interceptors
                 options.UseRedis(config =>
                 {
                     config.EnableLogging = true;
-                    config.DBConfig = new RedisDBOptions { Configuration = "localhost" };
+                    config.DBConfig = new RedisDBOptions { Configuration = "localhost:6379,allowAdmin=true,defaultDatabase=0,abortConnect=false" };
                     config.SerializerName = "json";
                 }, "redis");
 
@@ -49,6 +49,7 @@ namespace EasyCaching.Demo.Interceptors
                 options.WithRedisBus(config =>
                 {
                     config.Endpoints.Add(new Core.Configurations.ServerEndPoint("localhost", 6379));
+                    config.AbortOnConnectFail = false;
                     config.SerializerName = "json";
                 }, "redis-bus");
 
@@ -60,7 +61,7 @@ namespace EasyCaching.Demo.Interceptors
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
-            services.ConfigureAspectCoreInterceptor(options => options.CacheProviderName = "memory");
+            services.ConfigureAspectCoreInterceptor(options => options.CacheProviderName = "hybrid");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

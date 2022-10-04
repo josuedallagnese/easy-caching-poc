@@ -28,7 +28,14 @@ namespace EasyCaching.Demo.Web.Services
 
         public Customer GetCustomerByHybrid(int id)
         {
-            var cachedCustomer = _hybridCachingProvider.Get<Customer>($"customer:{id}");
+            var cachedCustomer = _hybridCachingProvider.Get<Customer>(
+                $"customer:{id}",
+                () =>
+                {
+                    // Load data from database
+                    return new Customer(id);
+                },
+                TimeSpan.FromMinutes(5));
 
             return cachedCustomer?.Value;
         }
